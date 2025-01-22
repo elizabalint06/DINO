@@ -5,8 +5,8 @@ const DINO_X_POSITION = 50;
 const DINO_Y_POSITION = 50;
 const DINO_HEIGHT = 40;
 const DINO_WIDTH = 30;
-const GRAVITY = 6;
-const JUMP_POWER = -50;
+const GRAVITY = 8;
+const JUMP_POWER = -70;
 const OBSTACLE_FREQUENCY = 2000;
 const TEN = 10;
 const OBSTACLE_FREQUENCY_LIMIT = 500;
@@ -96,10 +96,10 @@ function updateDinoPosition() {
 function checkCollision() {
     obstacles.forEach(obstacle => {
         if (
-            dino.x < obstacle.x + obstacle.width &&
-            dino.x + dino.width > obstacle.x &&
-            dino.y < obstacle.y &&
-            dino.y + dino.height > obstacle.y - obstacle.height
+            dino.x <= obstacle.x + obstacle.width &&
+            dino.x + dino.width >= obstacle.x &&
+            dino.y <= obstacle.y &&
+            dino.y + dino.height >= obstacle.y - obstacle.height
         ) {
             clearInterval(interval);
             clearInterval(obstacleInterval);
