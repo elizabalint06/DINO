@@ -6,7 +6,7 @@ const DINO_Y_POSITION = 50;
 const DINO_HEIGHT = 40;
 const DINO_WIDTH = 30;
 const GRAVITY = 8;
-const JUMP_POWER = -70;
+const JUMP_POWER = -60;
 const OBSTACLE_FREQUENCY = 2000;
 const TEN = 10;
 const OBSTACLE_FREQUENCY_LIMIT = 500;
@@ -25,7 +25,7 @@ const ctx = gameBoard.getContext("2d");
 
 const dino = {
     x: DINO_X_POSITION,
-    y: gameBoard.height - DINO_Y_POSITION,
+    y: gameBoard.height - DINO_Y_POSITION - DINO_HEIGHT,
     height: DINO_HEIGHT,
     width: DINO_WIDTH,
     color: "green",
@@ -85,8 +85,8 @@ function updateDinoPosition() {
         dino.velocityY += dino.gravity;
         dino.y += dino.velocityY;
         
-        if (dino.y >= gameBoard.height - GROUND_Y_POSITION) {
-            dino.y = gameBoard.height - GROUND_Y_POSITION;
+        if (dino.y >= gameBoard.height - GROUND_Y_POSITION - DINO_HEIGHT) {
+            dino.y = gameBoard.height - GROUND_Y_POSITION - DINO_HEIGHT;
             dino.isJumping = false;
             dino.velocityY = 0;
         }
@@ -96,11 +96,15 @@ function updateDinoPosition() {
 function checkCollision() {
     obstacles.forEach(obstacle => {
         if (
-            dino.x <= obstacle.x + obstacle.width &&
-            dino.x + dino.width >= obstacle.x &&
-            dino.y <= obstacle.y &&
-            dino.y + dino.height >= obstacle.y - obstacle.height
+            dino.x < obstacle.x + obstacle.width && 
+            dino.x + dino.width > obstacle.x &&    
+            dino.y < obstacle.y + obstacle.height && 
+            dino.y + dino.height > obstacle.y       
         ) {
+            console.log("COLIZIUNE DETECTATA!");
+            console.log(`Dino: X=${dino.x}, Y=${dino.y}, W=${dino.width}, H=${dino.height}`);
+            console.log(`Obstacle: X=${obstacle.x}, Y=${obstacle.y}, W=${obstacle.width}, H=${obstacle.height}`);
+
             clearInterval(interval);
             clearInterval(obstacleInterval);
             gameOverScreen();
@@ -110,13 +114,13 @@ function checkCollision() {
 
 function drawDino() {
     ctx.fillStyle = dino.color;
-    ctx.fillRect(dino.x, dino.y - dino.height, dino.width, dino.height);
+    ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
 }   
 
 function drawObstacles() {
     obstacles.forEach(obstacle => {
     ctx.fillStyle = obstacle.color;
-    ctx.fillRect(obstacle.x, obstacle.y - obstacle.height, obstacle.width, obstacle.height);
+    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
     });
 } 
 
@@ -144,7 +148,7 @@ function createObstacle() {
     let obstacleSpeed = OBSTACLE_MIN_SPEED + Math.random() * OBSTACLE_MIN_SPEED + score / 2;
     let obstacle = {
         x: gameBoard.width,
-        y: gameBoard.height - GROUND_Y_POSITION,
+        y: gameBoard.height - GROUND_Y_POSITION - obstacleHeight,
         width: OBSTACLE_WIDTH, 
         height: obstacleHeight, 
         color: 'red',
