@@ -1,29 +1,29 @@
 const UP = 38;
-const INTERVAL = 50;
+const INTERVAL = 5;
 const SECOND = 1000;
 const DINO_X_POSITION = 50;
 const DINO_Y_POSITION = 50;
 const DINO_HEIGHT = 40;
 const DINO_WIDTH = 30;
-const GRAVITY = 8;
-const JUMP_POWER = -60;
+const GRAVITY = 0.2;
+const JUMP_POWER = -8;
 const OBSTACLE_FREQUENCY = 2000;
 const TEN = 10;
-const OBSTACLE_FREQUENCY_LIMIT = 500;
-const FREQUENCY_DECREASES = 50;
+const OBSTACLE_FREQUENCY_LIMIT = 5000;
+const FREQUENCY_DECREASES = 5;
 const GROUND_Y_POSITION = 50;
 const SCORE_X_POSITION = 10;
 const SCORE_Y_POSITION = 30;
-const OBSTACLE_MIN_HEIGHT = 20;
-const OBSTACLE_MAX_HEIGHT = 40;
-const OBSTACLE_MIN_SPEED = 5;
+const OBSTACLE_MIN_HEIGHT = 35;
+const OBSTACLE_MAX_HEIGHT = 50;
+const OBSTACLE_MIN_SPEED = 0.8;
 const OBSTACLE_WIDTH = 30;
 const GAME_OVER_X_POSITION = 150;
 
 const gameBoard = document.getElementById("gameBoard");
 const ctx = gameBoard.getContext("2d");
 
-const dino = {
+let dino = {
     x: DINO_X_POSITION,
     y: gameBoard.height - DINO_Y_POSITION - DINO_HEIGHT,
     height: DINO_HEIGHT,
@@ -65,10 +65,10 @@ function startGame() {
 function frameUpdate() {
     ctx.clearRect(0, 0, gameBoard.width, gameBoard.height);
     printBackGround();
+    updateDinoPosition();
     drawDino();
     updateObstacles();
     drawObstacles();
-    updateDinoPosition();
     checkCollision();
     printScore();
 }
@@ -101,12 +101,8 @@ function checkCollision() {
             dino.y < obstacle.y + obstacle.height && 
             dino.y + dino.height > obstacle.y       
         ) {
-            console.log("COLIZIUNE DETECTATA!");
-            console.log(`Dino: X=${dino.x}, Y=${dino.y}, W=${dino.width}, H=${dino.height}`);
-            console.log(`Obstacle: X=${obstacle.x}, Y=${obstacle.y}, W=${obstacle.width}, H=${obstacle.height}`);
-
-            clearInterval(interval);
             clearInterval(obstacleInterval);
+            clearInterval(interval);
             gameOverScreen();
         }
     });
@@ -127,7 +123,7 @@ function drawObstacles() {
 function printBackGround() {
     ctx.drawImage(
         backgroundImage, 0, 0, gameBoard.width, gameBoard.height
-    )
+    );
 }
 
 function printScore() {
