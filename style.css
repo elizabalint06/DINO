@@ -1,5 +1,5 @@
 #gameBoard {
-    background: url('png/Cartoon_Forest_BG_01/Layers/Ground.png') no-repeat center/cover;
+    background: url('ground/Ground.png') no-repeat center/cover;
 }
 
 .game-over {
