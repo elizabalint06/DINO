@@ -12,18 +12,15 @@ const TEN = 10;
 const OBSTACLE_FREQUENCY_LIMIT = 5000;
 const FREQUENCY_DECREASES = 5;
 const GROUND_Y_POSITION = 50;
-const SCORE_X_POSITION = 10;
-const SCORE_Y_POSITION = 30;
 const OBSTACLE_MIN_HEIGHT = 35;
 const OBSTACLE_MAX_HEIGHT = 50;
 const OBSTACLE_MIN_SPEED = 0.8;
 const OBSTACLE_WIDTH = 30;
-const GAME_OVER_X_POSITION = 150;
 
 const gameBoard = document.getElementById("gameBoard");
 const ctx = gameBoard.getContext("2d");
 
-let dino = {
+const dino = {
     x: DINO_X_POSITION,
     y: gameBoard.height - DINO_Y_POSITION - DINO_HEIGHT,
     height: DINO_HEIGHT,
@@ -44,12 +41,6 @@ let obstacleFrequency = OBSTACLE_FREQUENCY;
 function startGame() {
     document.addEventListener("keydown", keyPressed);
 
-    backgroundImage = new Image();
-    backgroundImage.src = 'png/Cartoon_Forest_BG_01/Layers/Ground.png';
-    backgroundImage.onload = function () {
-        printBackGround();
-    }
-
     obstacleInterval = setInterval(createObstacle, obstacleFrequency);
     interval = setInterval(frameUpdate, INTERVAL);
     setInterval(function() {
@@ -64,11 +55,9 @@ function startGame() {
 
 function frameUpdate() {
     ctx.clearRect(0, 0, gameBoard.width, gameBoard.height);
-    printBackGround();
     updateDinoPosition();
-    drawDino();
     updateObstacles();
-    drawObstacles();
+    draw();
     checkCollision();
     printScore();
 }
@@ -94,7 +83,7 @@ function updateDinoPosition() {
 }
 
 function checkCollision() {
-    obstacles.forEach(obstacle => {
+    obstacles.some(obstacle => {
         if (
             dino.x < obstacle.x + obstacle.width && 
             dino.x + dino.width > obstacle.x &&    
@@ -107,29 +96,18 @@ function checkCollision() {
         }
     });
 }
-
-function drawDino() {
+function draw() {
     ctx.fillStyle = dino.color;
     ctx.fillRect(dino.x, dino.y, dino.width, dino.height);
-}   
 
-function drawObstacles() {
     obstacles.forEach(obstacle => {
-    ctx.fillStyle = obstacle.color;
-    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        ctx.fillStyle = obstacle.color;
+        ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
     });
-} 
-
-function printBackGround() {
-    ctx.drawImage(
-        backgroundImage, 0, 0, gameBoard.width, gameBoard.height
-    );
 }
 
 function printScore() {
-    ctx.fillStyle = "black";
-    ctx.font = "20px Monospace";
-    ctx.fillText("Score: " + score, SCORE_X_POSITION, SCORE_Y_POSITION);
+    document.getElementById("score").textContent = "Score: " + score;
 }
 
 function keyPressed(e) {
@@ -140,9 +118,10 @@ function keyPressed(e) {
 }
 
 function createObstacle() {
-    let obstacleHeight = OBSTACLE_MIN_HEIGHT + Math.random() * OBSTACLE_MAX_HEIGHT;
-    let obstacleSpeed = OBSTACLE_MIN_SPEED + Math.random() * OBSTACLE_MIN_SPEED + score / 2;
-    let obstacle = {
+    const obstacleHeight = OBSTACLE_MIN_HEIGHT + Math.random() * OBSTACLE_MAX_HEIGHT;
+    const obstacleSpeed = OBSTACLE_MIN_SPEED + Math.random() * 
+        OBSTACLE_MIN_SPEED + score / 2;
+    const obstacle = {
         x: gameBoard.width,
         y: gameBoard.height - GROUND_Y_POSITION - obstacleHeight,
         width: OBSTACLE_WIDTH, 
@@ -154,10 +133,8 @@ function createObstacle() {
 }
 
 function gameOverScreen() {
-    ctx.fillStyle = "red";
-    ctx.font = "50px Monospaced";
-    ctx.fillText("Your score: " + score,
-        gameBoard.width / 2 - GAME_OVER_X_POSITION, gameBoard.height / 2);
+    document.getElementById("gameOver").textContent = "Your score: " + score;
+    document.getElementById("gameOver").style.display = 'block' ;
 }
 
 startGame();
